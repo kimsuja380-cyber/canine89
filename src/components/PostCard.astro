@@ -1,0 +1,22 @@
+---
+import type { BlogPost } from '../lib/blog';
+import { formatDate } from '../lib/blog';
+
+interface Props {
+	post: BlogPost;
+	heading?: 'h2' | 'h3';
+}
+
+const { post, heading = 'h2' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const Heading = heading;
+---
+
+<a class="post-item" href={`${base}blog/${post.id}/`}>
+	<div class="post-meta">
+		<time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+		<span>{post.data.category}</span>
+	</div>
+	<Heading>{post.data.title}</Heading>
+	<p>{post.data.description}</p>
+</a>

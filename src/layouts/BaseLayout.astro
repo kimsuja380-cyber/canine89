@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+	current?: 'home' | 'about' | 'blog';
+}
+
+const {
+	title = '서재 · My Blog',
+	description = '마크다운으로 쓰는 나만의 정적 블로그',
+	current,
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<link rel="icon" type="image/png" href={`${base}favicon.png`} />
+		<link rel="apple-touch-icon" href={`${base}favicon.png`} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<header class="site-header">
+			<div class="site-shell site-header-inner">
+				<a class="brand" href={base}>
+					<img class="brand-logo" src={`${base}blog-icon.png`} alt="" width="36" height="36" />
+					<span>서재</span>
+				</a>
+				<nav class="nav" aria-label="주요 메뉴">
+					<a href={base} aria-current={current === 'home' ? 'page' : undefined}>HOME</a>
+					<a href={`${base}about`} aria-current={current === 'about' ? 'page' : undefined}
+						>About</a
+					>
+					<a href={`${base}blog`} aria-current={current === 'blog' ? 'page' : undefined}>Blog</a>
+				</nav>
+			</div>
+		</header>
+
+		<main class="site-shell site-main">
+			<slot />
+		</main>
+
+		<footer class="site-footer">
+			<div class="site-shell">
+				<p>© {new Date().getFullYear()} 서재 · Astro 정적 블로그</p>
+			</div>
+		</footer>
+	</body>
+</html>

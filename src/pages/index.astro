@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import PostList from '../components/PostList.astro';
+import { getPublishedPosts } from '../lib/blog';
+
+const posts = (await getPublishedPosts()).slice(0, 3);
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="서재 · HOME" current="home">
+	<section class="hero">
+		<img
+			class="hero-icon"
+			src={`${base}blog-icon.png`}
+			alt="서재 대표 아이콘"
+			width="112"
+			height="112"
+		/>
+		<p class="brand-mark">서재</p>
+		<h1>나만의 정적 블로그</h1>
+		<p>마크다운으로 쓰고, 빌드해서 GitHub Pages에 올리는 가벼운 기록 공간입니다.</p>
+		<div class="chip-row" style="justify-content: center;">
+			<a class="chip" href={`${base}blog`}>글 목록 보기</a>
+			<a class="chip" href={`${base}about`}>소개</a>
+		</div>
+	</section>
+
+	<section class="page-panel" style="margin-top: 2rem;">
+		<h2 class="section-title">최근 글</h2>
+		<p class="section-lead">새로 올라온 기록을 먼저 만나보세요.</p>
+		<PostList>
+			{posts.map((post) => (
+				<li>
+					<PostCard post={post} />
+				</li>
+			))}
+		</PostList>
+	</section>
+</BaseLayout>

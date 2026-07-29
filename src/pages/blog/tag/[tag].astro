@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import PostList from '../../../components/PostList.astro';
+import { getPublishedPosts, slugify } from '../../../lib/blog';
+
+export async function getStaticPaths() {
+	const posts = await getPublishedPosts();
+	const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+
+	return tags.map((tag) => ({
+		params: { tag: slugify(tag) },
+		props: {
+			tag,
+			posts: posts.filter((post) => post.data.tags.includes(tag)),
+		},
+	}));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`${tag} · 태그`} description={`${tag} 태그 글`} current="blog">
+	<section class="page-panel">
+		<h1 class="section-title">태그: {tag}</h1>
+		<p class="section-lead">{posts.length}편의 글</p>
+		<PostList>
+			{posts.map((post) => (
+				<li>
+					<PostCard post={post} />
+				</li>
+			))}
+		</PostList>
+	</section>
+</BaseLayout>

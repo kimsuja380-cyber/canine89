@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import PostList from '../../../../components/PostList.astro';
+import { getPublishedPosts, getYearMonth } from '../../../../lib/blog';
+
+export async function getStaticPaths() {
+	const posts = await getPublishedPosts();
+	const keys = new Map<string, { year: string; month: string; label: string }>();
+
+	for (const post of posts) {
+		const info = getYearMonth(post.data.pubDate);
+		keys.set(`${info.year}-${info.month}`, info);
+	}
+
+	return [...keys.values()].map(({ year, month, label }) => ({
+		params: { year, month },
+		props: {
+			label,
+			posts: posts.filter((post) => {
+				const info = getYearMonth(post.data.pubDate);
+				return info.year === year && info.month === month;
+			}),
+		},
+	}));
+}
+
+const { label, posts } = Astro.props;
+---
+
+<BaseLayout title={`${label} · 아카이브`} description={`${label} 글 목록`} current="blog">
+	<section class="page-panel">
+		<h1 class="section-title">{label}</h1>
+		<p class="section-lead">{posts.length}편의 글</p>
+		<PostList>
+			{posts.map((post) => (
+				<li>
+					<PostCard post={post} />
+				</li>
+			))}
+		</PostList>
+	</section>
+</BaseLayout>
